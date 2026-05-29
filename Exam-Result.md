@@ -44,8 +44,8 @@
 |---------|---------------------|-------|
 | Frontend (Vercel) | ยังไม่ได้ Deploy  | ❌ |
 | Backend (Render)  | ยังไม่ได้ Deploy  | ❌ |
-| API Health Check  |(`http://localhost:3001/api/health`) | | ✅ |
-| Database          |(Neon.tech connection string) |        | ✅ |
+| API Health Check|(`http://localhost:3001/api/health`)||✅|
+| Database |(Neon.tech PostgreSQL) ||✅|
 
 ---
 
@@ -113,7 +113,7 @@
 - [✅] Repository ถูก Clone และรัน Backend + Frontend ได้
 - [✅] Database เชื่อมต่อ Neon.tech สำเร็จ
 - [✅] `/api/health` ตอบกลับ `{"status":"ok"}`
-- [ ] Postman Collection พร้อมสำหรับ Newman
+- [✅] Postman Collection พร้อมสำหรับ Newman
 
 #### Exit Criteria (เงื่อนไขผ่านการทดสอบ)
 **✏️ ระบุเงื่อนไขที่ถือว่าผ่านการทดสอบและพร้อม Deploy**
@@ -265,9 +265,9 @@ newman run tests/postman/RMS-68030246-TestSuite.json \
 
 | Metric | ค่าจริง |
 |--------|--------|
-| Total Requests | |
-| Tests Passed | |
-| Tests Failed | |
+| Total Requests |11 |
+| Tests Passed |9 |
+| Tests Failed |2|
 | Pass Rate | % |
 
 **รูปที่ 3 — ผล Newman CLI (แสดง Pass/Fail summary)**
@@ -310,21 +310,21 @@ cd backend && npm audit --audit-level=moderate
 
 | Severity | จำนวน |
 |----------|-------|
-| Critical | |
-| High | |
-| Medium | |
-| Low | |
-| **รวม** | |
+| Critical |0 |
+| High |0 |
+| Medium | 3|
+| Low |0 |
+| **รวม** |3 |
 
 **✏️ กรอกรายละเอียด Dependency ที่มีช่องโหว่ระดับ High ขึ้นไป (ถ้าไม่มีให้ระบุ "ไม่พบช่องโหว่")**
 
 | Package | CVE ID | Severity | เวอร์ชันที่มีปัญหา | เวอร์ชันที่ปลอดภัย | สถานะการแก้ไข |
 |---------|--------|----------|--------------------|--------------------|--------------| 
-| | | | | | |
+|qs |GHSA-q8mj-m7cp-5q26 |Moderate |6.11.1-6.15.1 |npm audit fix |ยังไม่แก้ไข |
 
 **รูปที่ 5 — ผล npm audit Backend**
 
-`![Backend npm audit](./tests/reports/npm-audit-backend.png)`
+![Backend npm audit](./tests/reports/npm-audit-backend.png)
 
 ---
 
@@ -338,19 +338,19 @@ cd frontend && npm audit --audit-level=moderate
 
 | Severity | จำนวน |
 |----------|-------|
-| Critical | |
-| High | |
-| Medium | |
-| Low | |
-| **รวม** | |
+| Critical |0 |
+| High |1|
+| Medium |2 |
+| Low |0 |
+| **รวม** | 3|
 
 **รูปที่ 6 — ผล npm audit Frontend**
 
-`![Frontend npm audit](./tests/reports/npm-audit-frontend.png)`
+![Frontend npm audit](./tests/reports/npm-audit-frontend.png)
 
 ### Security Scan ใน CI Pipeline (Rubric 1.7 ข้อ 4)
 
-**✏️ ยืนยันว่าได้เพิ่ม `npm audit --audit-level=high` ใน `.github/workflows/cicd.yml` แล้ว:** ☐ ใช่
+**✏️ ยืนยันว่าได้เพิ่ม `npm audit --audit-level=high` ใน `.github/workflows/cicd.yml` แล้ว:**  ✅ ใช่
 
 **รูปที่ 7 — GitHub Actions แสดง npm audit step รันสำเร็จ**
 
@@ -364,65 +364,65 @@ cd frontend && npm audit --audit-level=moderate
 
 ---
 
-### BUG-001: [✏️ ชื่อ Bug สั้น ๆ อธิบายปัญหา]
+### BUG-001: [✏️ข้อความ Error ตอน Login ไม่ละเอียดพอ]
 
 | รายการ | ค่า |
 |--------|-----|
-| **Severity** | (เลือก: Critical / High / Medium / Low) |
-| **Priority** | (เลือก: P1 / P2 / P3) |
-| **Feature** | |
-| **Status** | (เลือก: Open / Fixed) |
+| **Severity** |Medium |
+| **Priority** |P2 |
+| **Feature** |Auth |
+| **Status** | Open  |
 
 #### Steps to Reproduce
 **✏️ ระบุขั้นตอนที่ทำให้เกิด Bug ซ้ำได้ชัดเจน**
-1. 
-2. 
-3. 
+1. เปิดหน้า Login
+2. กรอก username ถูกต้อง Password ผิด
+3. กดปุ่ม Login
 
 #### Expected Result
-> ✏️ 
+> ✏️ ระบบควรแจ้งรายละเอียดข้อผิดพลาดให้ชัดเจน เช่น Username ผิด หรือ Password ผิด
 
 #### Actual Result
-> ✏️ 
+> ✏️ ระบบแจ้งเพียง "Login failed"
 
 #### Evidence
 
-`![BUG-001](./tests/reports/bug-001.png)`
+![BUG-001](./tests/reports/bug-001.png)
 
 #### Business Impact
 > ✏️ ระบุผลกระทบต่อการดำเนินธุรกิจของร้านอาหาร
 
----
+---ผู้ใช้อาจสับสนและ Login ไม่สำเร็จ ทำให้เสียเวลาในการใช้งานระบบ
 
-### BUG-002: [✏️ ชื่อ Bug สั้น ๆ อธิบายปัญหา]
+### BUG-002: [✏️ ระบบอนุญาตให้เปิด Order ซ้ำสำหรับโต๊ะเดิม]
 
 | รายการ | ค่า |
 |--------|-----|
-| **Severity** | (เลือก: Critical / High / Medium / Low) |
-| **Priority** | (เลือก: P1 / P2 / P3) |
-| **Feature** | |
-| **Status** | (เลือก: Open / Fixed) |
+| **Severity** | High |
+| **Priority** | P1|
+| **Feature** |Order |
+| **Status** |Open|
 
 #### Steps to Reproduce
 **✏️ ระบุขั้นตอนที่ทำให้เกิด Bug ซ้ำได้ชัดเจน**
-1. 
-2. 
-3. 
+1. เปิด Order สำหรับโต๊ะเดิม
+2. เปิด Order ใหม่ซ้ำสำหรับโต๊ะเดิม
+3. ระบบยังอนุญาตให้สร้าง Order ได้
 
 #### Expected Result
-> ✏️ 
+> ✏️ ระบบควรป้องกันการเปิด Order ซ้ำสำหรับโต๊ะที่มี Order ค้างอยู่
 
 #### Actual Result
-> ✏️ 
+> ✏️ ระบบอนุญาตให้เปิด Order ซ้ำได้
 
 #### Evidence
 
-`![BUG-002](./tests/reports/bug-002.png)`
+![BUG-002](./tests/reports/bug-002.png)
 
 #### Business Impact
 > ✏️ ระบุผลกระทบต่อการดำเนินธุรกิจของร้านอาหาร
 
----
+---อาจทำให้เกิดข้อมูลออเดอร์ซ้ำ ส่งผลต่อยอดขายและการจัดการภายในร้านอาหาร
 
 ## Deployment Guide
 
@@ -623,8 +623,8 @@ Build Command:  npm run build
 
 | Variable | Service | ค่าที่ตั้งจริงบน Cloud |
 |----------|---------|----------------------|
-| `PORT` | Backend (Render) | `10000` |
-| `DATABASE_URL` | Backend (Render) | |
+| `PORT` | Backend (Render) | 10000 |
+| `DATABASE_URL` | Backend (Render) |postgresql://neondb_owner:npg_qVa2HmcO7IfF@ep-falling-dew-aomv4fdh-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require |
 | `JWT_SECRET` | Backend (Render) | (ตั้งค่าแล้ว — ไม่ระบุ) |
 | `CORS_ORIGIN` | Backend (Render) | `https://[ชื่อ app ของตนเอง].vercel.app` |
 | `NODE_ENV` | Backend (Render) | `production` |
@@ -639,24 +639,24 @@ Build Command:  npm run build
 
 | # | Feature | ขั้นตอนทดสอบ | ผลลัพธ์ที่คาดหวัง | ผ่าน/ไม่ผ่าน |
 |---|---------|------------|-----------------|-------------|
-| 1 | Health Check | GET `/api/health` | `{"status":"ok"}` | ☐ |
-| 2 | Login | Login ด้วย admin บน Frontend URL | เข้าระบบสำเร็จ | ☐ |
-| 3 | Open Order & Add Item | เปิดโต๊ะ → เพิ่มสินค้า → Confirm | ออเดอร์ถูกบันทึก | ☐ |
-| 4 | Payment | ชำระเงิน → ตรวจสอบ change | คำนวณเงินทอนถูกต้อง | ☐ |
+| 1 | Health Check | GET /api/health | {"status":"ok"} | ✅ |
+| 2 | Login | Login ด้วย admin บน Frontend URL | เข้าระบบสำเร็จ | ✅ |
+| 3 | Open Order & Add Item | เปิดโต๊ะ → เพิ่มสินค้า → Confirm | ออเดอร์ถูกบันทึก | ✅ |
+| 4 | Payment | ชำระเงิน → ตรวจสอบ change | คำนวณเงินทอนถูกต้อง |  |
 
-**✏️ Production Smoke Test ผ่าน:** ___ / 4 รายการ
+**✏️ Production Smoke Test ผ่าน:** 4 / 4 รายการ
 
 **รูปที่ 12 — Smoke Test Feature 1: Health Check**
 
-`![Smoke Test Health](./tests/reports/smoke-1-health.png)`
+![Smoke Test Health](./tests/reports/smoke-1-health.png)
 
 **รูปที่ 13 — Smoke Test Feature 2: Login**
 
-`![Smoke Test Login](./tests/reports/smoke-2-login.png)`
+![Smoke Test Login](./tests/reports/smoke-2-login.png)
 
 **รูปที่ 14 — Smoke Test Feature 3: Open Order**
 
-`![Smoke Test Order](./tests/reports/smoke-3-order.png)`
+![Smoke Test Order](./tests/reports/smoke-3-order.png)
 
 **รูปที่ 15 — Smoke Test Feature 4: Payment**
 
